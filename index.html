@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>サンプルTODO</title>
+        <meta name="viewport" content=" initial-scale=1.0, minimum-scale=0.5, maximum-scale=2">
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    </head>
+    <body>
+        <div id="container">
+            <div id="todo-list">
+                <table>
+                    <tr>
+                        <th id="todo-form" colspan="4">
+                            <input v-model="todoTitle" type="text" placeholder="タスクを追加してください"></th>
+                        <th>
+                            <a v-on:click="addTodo()" class="button button-blue" href="#01">追加</a>
+                        </th>
+                    </tr>
+		    <tr v-for="todo in todoList" v-bind:class='{complete: todo.status}'>
+       		        <td>{{ todo.id }}</td>
+        		<td>{{ todo.date }}</td>
+ 	       	        <td>{{ todo.todo }}</td>
+		        <td class="text-right"><a v-on:click="changeStatus(todo)" class="button button-purple" href="#01">{{ todo.status | statusLabel}}</a></td>
+        		<td><a v-on:click="deleteTodo(todo.id)" class="button button-pink" href="#01"><i class="fa fa-close" aria-hidden="true"></i></a></td>
+    		    </tr>
+                </table>
+            </div>
+        </div>
+    <script>
+        var vue = new Vue({
+	    el: '#todo-list',
+	    data:{
+                todoList: [],
+		todoTitle:'',
+		id:1
+	    },
+            methods: {
+                getCurrentDate :function () {
+                    var date = new Date();
+                    return date.getFullYear() + '/' +  (date.getMonth() + 1) + '/' + 
+                    date.getDate() + ' ' + date.getHours() + ':' + 
+                    date.getMinutes() + ':' + date.getSeconds(); 
+                },
+                addTodo :function () {
+                    this.todoList.push({
+                        id: this.id,
+                        date: this.getCurrentDate(),
+                        todo: this.todoTitle,
+                        status: false
+                    });
+		    this.id++;
+		    this.todoTitle="";
+                },
+                deleteTodo :function (todoId) {
+                    var todoList = this.todoList;
+                    todoList.forEach(function(todo, index) {
+                        if(todo.id === todoId) {
+                            todoList.splice(index, 1);
+                        }
+                    });
+                },
+                changeStatus: function (todo) {
+                    todo.status = !todo.status;
+                },
+            },
+            filters: {
+                statusLabel: function (status) {
+                    var statusText = status? '未作業': '完了';
+                    return statusText;
+                }
+            }
+	});
+    </script>
+    </body>
+</html>
